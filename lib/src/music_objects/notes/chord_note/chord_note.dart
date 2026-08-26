@@ -535,27 +535,28 @@ class ChordNoteRenderer implements MusicalSymbolRenderer {
     double symbolX,
   ) {
     final renderOffset = _renderOffset(layout, staffLineCenterY, symbolX);
-    final noteHeadRenderArea = noteHeadsBbox.shift(renderOffset);
-    final noteHeadLeftX = noteHeadRenderArea.left;
-    final noteHeadCenterX = noteHeadLeftX + _noteHeadWidthForLeger / 2;
+    
+    // We render leger lines for the highest and lowest note heads individually.
+    // Use the base note head width rather than the entire chord's bbox.
+    final legerLineWidth = legerLineExtension * 2 + _noteHeadWidth;
 
-    LegerLineRenderer(
-      layout.lineColor,
-      uppestNotePosition,
-      staffLineCenterY: staffLineCenterY,
-      noteCenterX: noteHeadCenterX,
-      legerLineWidth: _legerLineWidth,
-      legerLineThickness: _legerLineThickness,
-    ).render(canvas);
-    LegerLineRenderer(
-      layout.lineColor,
-      lowestNotePosition,
-      staffLineCenterY: staffLineCenterY,
-      noteCenterX: noteHeadCenterX,
-      legerLineWidth: _legerLineWidth,
-      legerLineThickness: _legerLineThickness,
-    ).render(canvas);
+    void renderSingleLegerLine(ChordNoteHeadMetrics noteHeadMetrics, StavePosition stavePosition) {
+      final leftX = _getNoteHeadLeftX(noteHeadMetrics.part);
+      final centerOffsetX = leftX + _noteHeadWidth / 2;
+      final noteHeadCenterX = renderOffset.dx + centerOffsetX;
+      LegerLineRenderer(
+        layout.lineColor,
+        stavePosition,
+        staffLineCenterY: staffLineCenterY,
+        noteCenterX: noteHeadCenterX,
+        legerLineWidth: legerLineWidth,
+        legerLineThickness: _legerLineThickness,
+      ).render(canvas);
+    }
+
+    renderSingleLegerLine(_uppestNote, uppestNotePosition);
+    renderSingleLegerLine(_lowestNote, lowestNotePosition);
   }
 
-  double get _noteHeadWidthForLeger => noteHeadsBbox.width;
+  double get _noteHeadWidthForLeger => _noteHeadWidth;
 }

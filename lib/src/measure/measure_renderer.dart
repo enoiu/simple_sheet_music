@@ -44,7 +44,7 @@ class MeasureRenderer {
   double get _measureUpperHeight => metadata.measureUpperHeight;
 
   /// Returns the maximum height of the measure upper part.
-  double get upperHeight => max(_symbolMaximumUpperHeight, _measureUpperHeight);
+  double get upperHeight => max(_symbolMaximumUpperHeight, max(_measureUpperHeight, Constants.staffSpace * 6));
 
   /// Gets the maximum lower height among all the musical symbols in the measure.
   double get _symbolMaximumLowerHeight =>
@@ -54,7 +54,7 @@ class MeasureRenderer {
   double get _measureLowerHeight => metadata.measureLowerHeight;
 
   /// Returns the maximum height of the measure lower part.
-  double get lowerHeight => max(_symbolMaximumLowerHeight, _measureLowerHeight);
+  double get lowerHeight => max(_symbolMaximumLowerHeight, max(_measureLowerHeight, Constants.staffSpace * 6));
 
   /// Gets the sum of the horizontal margins of all the musical symbols in the measure.
   double get horizontalMarginSum =>
