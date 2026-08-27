@@ -237,9 +237,17 @@ class ChordNoteRenderer implements MusicalSymbolRenderer {
   double _getNoteHeadLeftX(ChordNotePart note) =>
       (_hasNoteHeadBelowOne(note) ? _rightNoteHeadLeftX : _leftNoteHeadLeftX);
 
-  /// Checks if the position difference with the note below is 1.
-  bool _hasNoteHeadBelowOne(ChordNotePart noteHead) =>
-      _otherPitches(noteHead.pitch).contains(noteHead.pitch.down);
+  /// Checks if the note should be shifted to the right to avoid collision.
+  bool _hasNoteHeadBelowOne(ChordNotePart noteHead) {
+    final allPitches = _noteParts.map((e) => e.pitch).toSet();
+    int distance = 0;
+    var current = noteHead.pitch;
+    while (allPitches.contains(current.down)) {
+      distance++;
+      current = current.down;
+    }
+    return distance % 2 != 0;
+  }
 
   /// Returns a list of [Pitch] objects that are not equal to the given [pitch].
   List<Pitch> _otherPitches(Pitch pitch) =>
